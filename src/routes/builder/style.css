@@ -1,0 +1,84 @@
+.card-search {
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    right: 0;
+    left: auto;   
+    background-color: rgb(46, 147, 114);
+    width: 27vw;  
+    height: 100vh;
+    border-left: 2px solid black;
+}
+
+.filterExpandBtn {
+    background: white;
+    width: 100%;
+    height: auto;
+    border: none;
+    border-bottom: 2px solid black;
+    border-top: 2px solid black;
+}
+.filterExpandBtn:hover {background: rgb(220, 215, 215);}
+.search-bar {
+    width: 100%;
+    padding: .25rem;
+    box-sizing: border-box;
+    border: none;
+    border-bottom: 2px solid black;
+    border-top: 2px solid black;
+}
+
+.card-container {
+    flex: 1 1 auto;         
+         
+    width: 95%;     
+    height: 85vh;
+    align-self: center;
+    background-color: rgba(12, 69, 95, 0.9);
+    overflow: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    box-shadow: 2px 2px 6px rgba(0,0,0,0, 1);
+    z-index: 10;
+    border: 2px solid rgb(0, 0, 0);
+}
+
+.card-container::-webkit-scrollbar {
+    display: none;
+}
+
+.card-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+}
+
+.card {
+    text-align: center;
+    box-shadow: 2px 2px 6px rgba(0,0,0,0.1);
+    border-radius: 14px;
+}
+
+.card img {
+    position: relative;
+    height: auto;
+    width: 100%;
+    object-fit: cover;
+    border-radius: 4px;
+    top: .25rem;
+}
+.card img:hover {
+    transform: scale(1.01);
+    transition: transform 0.1s ease-in-out;
+    box-shadow: 2px 2px 6px rgba(0,0,0,0.2);
+    cursor: pointer;
+}
+
+.card h3 {
+    margin: 0.5rem 0 0.25rem;
+}
+
+.card p {
+    font-size: 0.85rem;
+    margin: 0.25rem 0;
+}
