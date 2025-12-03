@@ -42,41 +42,47 @@
 
 <style>
     .deck-box {
-        background: black;
+        background: none;
         display: flex;
         flex-direction: column;
         position: fixed;
-        width: min(50vw, 90vh * 1.07);
-        height: min(90vh, 50vw / 1.07);
-        left: 22vw;
-        top: 15vh;
+        left: 15vw;
+        top: 5vh;
+        height: auto;
         justify-content: center;
+        width: min(50vw, 90vh);
+
     }
     .deck-container {
         display: grid;
-        aspect-ratio: 9 / 8.5;
-        height: auto;
-        width: auto;
-        max-width: 150%;
-        max-height: 150%;
+        height: 50vh;
+        width: 100vw;
         grid-template-columns: repeat(10, 1fr);
-        grid-auto-rows: min-content;
-        gap: .25rem;
+        grid-template-rows: repeat(5, 1fr);
+        max-width: 80%;
+        max-height: 80%;
+        gap: .15rem;
+        padding: .5rem;
+        border: 1px solid white;
+        box-shadow: -8px 6px 8px rgba(0,0,0,0.4);
     }
     .card {
         box-shadow: 2px 2px 6px rgba(0,0,0,0.1);
         border-radius: 14px;
-        width: 100%;
-        height: 100%;
+        width: auto;
+        height: auto;
         object-fit: cover;
     }
     .card img {
+        aspect-ratio: 63 / 88;
         display: block;
         max-width: 100%;
+        width: auto;
         max-height: 100%;
+        height: auto;
         object-fit: contain;
         border-radius: 4px;
-        top: .25rem;
+        top: .05rem;
 
     }
     .card img:hover {
