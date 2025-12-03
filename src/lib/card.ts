@@ -43,13 +43,24 @@ export function getLocalPath(cardNumber: number): string {
 
 export function handleImageError(event: Event, fallbackUrl: string) {
   const img = event.currentTarget as HTMLImageElement;
-  if (img.src === img.dataset.src) {
-    img.src = fallbackUrl;
-    img.onerror = (e) => handlePlaceholderFallback(e as Event, img);
-  }
+  img.onerror = null;
+  img.src = fallbackUrl;
 }
 
-function handlePlaceholderFallback(event: Event, img: HTMLImageElement) {
-  img.onerror = null;
-  img.src = "/assets/placeholder_card.jpg";
+let imgRef;
+let loaded = false;
+export const load = (element: HTMLImageElement) => {
+  const actualSrc = element.dataset.src ?? "";
+  const observer = new IntersectionObserver(([entry]) => {
+    if (entry.isIntersecting) {
+      if (actualSrc) element.src = actualSrc;
+      observer.disconnect();
+    }
+  });
+  observer.observe(element);
+  return {
+    destroy() {
+      observer.disconnect();
+    }
+  };
 }

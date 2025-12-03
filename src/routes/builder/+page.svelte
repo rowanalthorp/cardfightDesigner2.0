@@ -1,6 +1,6 @@
 <script lang="ts">
     import { onMount } from 'svelte';
-    import { filterFields, type BuilderFilterFields, type Card , getLocalPath, handleImageError} from "$lib/card";
+    import { filterFields, type BuilderFilterFields, type Card, load, getLocalPath, handleImageError} from "$lib/card";
     import { cards, filteredCards, filterOptions, searchBar, selectedFilters } from "./script";
     import MultiSelectDropdown from '$lib/multi_select_dropdown.svelte';
     import DeckBox from "$lib/deck_box.svelte";
@@ -68,6 +68,7 @@
                 {#if card.Race != "-" && card.Race != ""}
                     <div class="card">
                         <img 
+                        on:load
                         src={getLocalPath(card.CardNumber)} 
                         alt={card.Name} 
                         on:error={(e) => handleImageError(e, card.ImageURL)}

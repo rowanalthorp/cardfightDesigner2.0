@@ -10,7 +10,6 @@
         {#if card.Gift === '-' || card.Gift === ""}
         <div class="card">
             <img
-                loading="lazy"
                 src={getLocalPath(card.CardNumber)}
                 alt={card.Name}
                 on:error={(e) => handleImageError(e, card.ImageURL)}
