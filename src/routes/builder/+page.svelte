@@ -85,7 +85,7 @@
     $: {
         if (visibleCards.length > 0 && validCards.length > 0) {
             const scrollDirection = scrollTop > lastScrollTop ? 1 : -1;
-            const preloadCount = CARDS_PER_ROW * 10; // Preload 6 rows ahead
+            const preloadCount = CARDS_PER_ROW * 3; // Preload 6 rows ahead
             
             const preloadCards: number[] = [];
             
