@@ -1,0 +1,23 @@
+[
+    {
+        "CardNumber": 1,
+        "Name": "XXXXXXXX",
+        "Grade": "1",
+        "Clan": "United Sanctuary",
+        "Type": "Normal Unit",
+        "Rarity": "PR",
+        "Power": "8000",
+        "Shield": "10000",
+        "Critical": "1",
+        "Effect": "[ACT](RC):[COST][Put this unit into your soul], look at two cards from the top of your deck, put one chicken nugget from among them on the top of your deck, one card from among them on the bottom of your deck",
+        "Flavor": "Gather all the power, and deal a single blow!",
+        "Race": "Elf",
+        "Special": "Boost",
+        "Regulation": "V-Premium",
+        "SetNumber": "BCXXX9/VGX",
+        "Illustrator": "XXXXXX",
+        "Group": "Oracle Think Tank",
+        "ImageURL": "https://XXXXXXXXX.png",
+        "Gift": "-"
+    }
+]

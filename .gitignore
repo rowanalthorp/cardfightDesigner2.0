@@ -23,3 +23,5 @@ vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 
 static/cards/
+static/data/cards.json
+static/data/unique_card_values.json

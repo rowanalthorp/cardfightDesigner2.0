@@ -27,22 +27,50 @@ export const searchBarCards = (cards: Card[], search: string, searchFields: stri
     );
 }
 
+let filterTimeout: ReturnType<typeof setTimeout> | undefined;
+const internalFilters = writable<Record<BuilderFilterFields, Set<string>>>(
+    {} as Record<BuilderFilterFields, Set<string>>
+);
+
+selectedFilters.subscribe(value => {
+    if (filterTimeout) clearTimeout(filterTimeout);
+    filterTimeout = setTimeout(() => {
+        internalFilters.set(value);
+    }, 100);
+});
+
 export const filteredCards = derived(
-    [cards, searchBar, selectedFilters],
+    [cards, searchBar, internalFilters],
     ([$cards, $searchBar, $selectedFilters]) => {
+        if ($cards.length === 0) return [];
+        
         let results = searchBarCards($cards, $searchBar, searchFields);
+        
+        const activeFilters: Array<[BuilderFilterFields, Set<string>]> = [];
         for (const field of Object.keys($selectedFilters) as BuilderFilterFields[]) {
             const selected = $selectedFilters[field];
             if (selected && selected.size > 0) {
-                results = results.filter(card => {
-                    let value = String(card[field] ?? "").trim();
-                    if (field == "SetNumber" && value.includes("/")) {
-                        value = value.split("/")[0];
-                    }
-                    return selected.has(value);
-                });
+                activeFilters.push([field, selected]);
             }
         }
-        return results;
+        
+        if (activeFilters.length === 0) {
+            return results;
+        }
+        
+        return results.filter(card => {
+            for (const [field, selected] of activeFilters) {
+                let value = String(card[field] ?? "").trim();
+                
+                if (field === "SetNumber" && value.includes("/")) {
+                    value = value.split("/")[0];
+                }
+                
+                if (!selected.has(value)) {
+                    return false;
+                }
+            }
+            return true;
+        });
     }
 );
