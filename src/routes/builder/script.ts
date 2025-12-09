@@ -14,35 +14,59 @@ export const selectedFilters = writable<Record<BuilderFilterFields, Set<string>>
 
 export const searchFields = ["Name", "Race", "Effect", "Group", "Clan", "Flavor", "Illustrator"];
 
+// Optimized search with early exit
 export const searchBarCards = (cards: Card[], search: string, searchFields: string[]): Card[] => {
     if (!search.trim()) return cards;
-        
+    
     const query = search.toLowerCase();
-
-    return cards.filter(card => 
-        searchFields.some(field => {
-            const value = card[field as keyof Card];
-            return String(value).toLowerCase().includes(query);
-        })
-    );
+    const results: Card[] = [];
+    
+    for (let i = 0; i < cards.length; i++) {
+        const card = cards[i];
+        for (let j = 0; j < searchFields.length; j++) {
+            const value = card[searchFields[j] as keyof Card];
+            if (String(value).toLowerCase().includes(query)) {
+                results.push(card);
+                break;
+            }
+        }
+    }
+    
+    return results;
 }
 
-let filterTimeout: ReturnType<typeof setTimeout> | undefined;
-const internalFilters = writable<Record<BuilderFilterFields, Set<string>>>(
-    {} as Record<BuilderFilterFields, Set<string>>
-);
+let searchTimeout: ReturnType<typeof setTimeout> | undefined;
+const debouncedSearchBar = writable('');
 
-selectedFilters.subscribe(value => {
-    if (filterTimeout) clearTimeout(filterTimeout);
-    filterTimeout = setTimeout(() => {
-        internalFilters.set(value);
-    }, 100);
+searchBar.subscribe(value => {
+    if (searchTimeout) clearTimeout(searchTimeout);
+    searchTimeout = setTimeout(() => {
+        debouncedSearchBar.set(value);
+    }, 150); // Reduced debounce for better responsiveness
 });
 
+function serializeFilters(filters: Record<BuilderFilterFields, Set<string>>): string {
+    const entries = Object.entries(filters)
+        .map(([key, set]) => `${key}:${Array.from(set).sort().join(',')}`)
+        .sort()
+        .join('|');
+    return entries;
+}
+
+let lastFilterString = '';
+let cachedFilteredResult: Card[] = [];
+
 export const filteredCards = derived(
-    [cards, searchBar, internalFilters],
+    [cards, debouncedSearchBar, selectedFilters],
     ([$cards, $searchBar, $selectedFilters]) => {
-        if ($cards.length === 0) return [];
+        if ($cards.length === 0) {
+            cachedFilteredResult = [];
+            return cachedFilteredResult;
+        }
+        
+        const currentFilterString = serializeFilters($selectedFilters);
+        const filtersChanged = currentFilterString !== lastFilterString;
+        lastFilterString = currentFilterString;
         
         let results = searchBarCards($cards, $searchBar, searchFields);
         
@@ -53,13 +77,18 @@ export const filteredCards = derived(
                 activeFilters.push([field, selected]);
             }
         }
-        
+
         if (activeFilters.length === 0) {
-            return results;
+            cachedFilteredResult = results;
+            return cachedFilteredResult;
         }
         
-        return results.filter(card => {
-            for (const [field, selected] of activeFilters) {
+        const filtered: Card[] = [];
+        outer: for (let i = 0; i < results.length; i++) {
+            const card = results[i];
+            
+            for (let j = 0; j < activeFilters.length; j++) {
+                const [field, selected] = activeFilters[j];
                 let value = String(card[field] ?? "").trim();
                 
                 if (field === "SetNumber" && value.includes("/")) {
@@ -67,10 +96,14 @@ export const filteredCards = derived(
                 }
                 
                 if (!selected.has(value)) {
-                    return false;
+                    continue outer;
                 }
             }
-            return true;
-        });
+            
+            filtered.push(card);
+        }
+        
+        cachedFilteredResult = filtered;
+        return cachedFilteredResult;
     }
 );
