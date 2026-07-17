@@ -42,7 +42,7 @@
     
     .pagination-controls button {
         padding: 5px 15px;
-        background: #35b7cb;
+        background: #0502be;
         color: white;
         border: none;
         cursor: pointer;
